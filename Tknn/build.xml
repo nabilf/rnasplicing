@@ -1,0 +1,49 @@
+<project name="tknn" default="compile-tknn" basedir=".">
+
+	<property file="../build.properties" />
+	<property environment="env" />
+	<property name="src" value="./src" />
+	<property name="classes" value="./classes" />
+
+	<target name="compile-tknn" depends="clean,compile-tknn-classifier" />
+
+	<target name="clean">
+		<delete dir="${classes}" />
+		<mkdir dir="${classes}" />
+	</target>
+	<target name="clean_out">
+		<delete dir="${out_dir}" />
+		<mkdir dir="${out_dir}" />
+	</target>
+
+	<target name="compile-tknn-classifier">
+		<mkdir dir="${out_dir}/config" />
+		<copy todir="${out_dir}/config">
+			<fileset dir="./config" includes="log4j.xml" />
+			<fileset dir="./config" includes="sys.properties" />
+		</copy>
+		<mkdir dir="${out_dir}/images" />
+		<copy todir="${out_dir}">
+			<fileset dir="${lib_log4j}" casesensitive="yes">
+				<filename name="**/*.jar" />
+			</fileset>
+		</copy>
+
+		<javac destdir="${classes}" srcdir="." verbose="yes" debug="true" source="1.5">
+			<classpath>
+				<fileset dir="${lib_log4j}" casesensitive="yes">
+					<filename name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+		<jar jarfile="${out_dir}/${tknn_jar}.jar" basedir="${classes}" manifest="./META-INF/MANIFEST.MF" />
+	</target>
+
+</project>
+
+
+
+
+
+
+

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<appender name="console" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<!-- Pattern to output the caller's file name and line number -->
+			<param name="ConversionPattern"
+				value="%-5p [%-d{HH:mm:ss}] (%F:%L) - %m%n" />
+		</layout>
+	</appender>
+ 
+	<appender name="file_appender" class="org.apache.log4j.RollingFileAppender">
+		<param name="file" value="example.log" />
+		<param name="MaxFileSize" value="100KB" />
+		<!-- Keep one backup file -->
+		<param name="MaxBackupIndex" value="1" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%p %t %c - %m%n" />
+		</layout>
+	</appender>
+	
+	<root>
+		<appender-ref ref="file_appender" />
+		<appender-ref ref="console" />
+	</root>
+		
+
+	<logger name="it.uniroma3.dia.tknn.test.Main">
+		<level value="info" />
+	</logger>
+	<logger name="it.uniroma3.dia.tknn">
+		<level value="off" />
+	</logger>
+		<logger name="it.uniroma3.dia.tknn.main">
+		<level value="info" />
+	</logger>
+			<logger name="it.uniroma3.dia.tknn.classifier">
+		<level value="info" />
+	</logger>
+	<logger name="it.uniroma3.dia.tknn.setup">
+		<level value="info" />
+	</logger>
+	<logger name="it.uniroma3.dia.tknn.setup.SysSetup">
+		<level value="off" />
+	</logger>
+	<!-- 		<logger name="it.uniroma3.dia.tesi.classifier.methods">
+		<level value="off" />
+	</logger>
+
+	
+	<logger name="it.uniroma3.dia.tesi.algorithm.LevenshteinDistance">
+		<level value="off" />
+	</logger>
+	<logger name="it.uniroma3.dia.tesi.algorithm.TreeKernel">
+		<level value="off" />
+	</logger>
+		<logger name="it.uniroma3.dia.tesi.algorithm.Nussinov">
+		<level value="off" />
+	</logger>
+	<logger name="it.uniroma3.dia.tesi.algorithm.TreeBuilder">
+		<level value="off" />
+	</logger>
+		<logger name="it.uniroma3.dia.tesi.algorithm.RNAFolding">
+		<level value="off" />
+	</logger>
+	<logger name="it.uniroma3.dia.tesi.config">
+		<level value="info" />
+	</logger>
+>
+-->
+</log4j:configuration>

@@ -107,7 +107,7 @@ public class RNASequence implements Serializable, Comparable{
 	}
 
 	public String toString() {
-		return this.md5ID+ this.realClass+this.sequence+this.structure+this.extendedStructure;
+		return "\n REAL Class: "+ this.realClass+"; \n SEQUENCE: "+this.sequence+"; \n STRUCTURE: "+this.structure;
 	}
 
 	public int compareTo(Object o) {

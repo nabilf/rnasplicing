@@ -86,7 +86,9 @@ public class PaumHelper {
 		return vector; 
 	}
 	public SparseFeatureVector createPaumVector(RNASequence r){
+		log.debug("RNA : "+r.toString()); 
 		SparseFeatureVector v = new SparseFeatureVector(r.getStructure().length()); 
+		log.debug("Vector size " +v.getLen()); 
 		int[] indexes = new int[v.getLen()]; 
 		float[] values = new float[v.getLen()]; 
 		

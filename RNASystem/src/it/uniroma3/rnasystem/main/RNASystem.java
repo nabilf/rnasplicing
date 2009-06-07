@@ -47,20 +47,6 @@ public class RNASystem {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-
-//			Builder builder = null; 
-//			for (RNASequence rna : rnas) {
-//				builder = new GraphBuilder(rna.getSequence(), rna.getStructure()); 
-//				rna.setGraph(builder.execute());
-//			}
-//			CacheManager.writeGraphCache(rnas,ConfigurationLoader.get(Constant.DATASETPATH)+"graph.txt"); 
-//			
-//			DataSetManager.createDataSet(
-//					dataSetPath,
-//					Float.valueOf(ConfigurationLoader.get(Constant.TRAININGSET_FACTOR))); 	
-//			
-			//CLASSIFY
 			
 
 		log.info("THE END"); 

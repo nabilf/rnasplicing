@@ -14,8 +14,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 public class PaumClassifier extends GenericClassifier{
-	
+	private static Logger log = Logger.getLogger(PaumClassifier.class); 
 	private Paum classifier; 
 	
 	@Override
@@ -65,11 +67,13 @@ public class PaumClassifier extends GenericClassifier{
 			
 			float[] rValues = helper.createPaumVector(r).getValues(); 
 			int result = 0; 
-			for(int i =0; i<rValues.length; i++){
-			//	log.debug("rValues "+rValues[i]); 
-			//	log.debug("W[i]"+w[i]); 
+			log.debug("r values "+rValues.length); 
+			log.debug(out.getW().length); 
+			for(int i =0; i<rValues.length-1; i++){
+				//log.debug("rValues "+rValues[i]); 
+				//log.debug("W[i]"+out.getW()[i]); 
 				result += rValues[i]*out.getW()[i]; 
-			//	log.debug("Result"+result ); 
+				//log.debug("Result"+result ); 
 			}
 			
 			System.out.println("Result "+result);

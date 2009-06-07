@@ -23,5 +23,18 @@
 		<appender-ref ref="file_appender" />
 		<appender-ref ref="console" />
 	</root>
-		
+	
+	<logger name="it.uniroma3.rnafolding">
+		<level value="info" />
+	</logger>	
+		<logger name="it.uniroma3.rnaclassifier">
+		<level value="debug" />
+	</logger>
+		<logger name="it.uniroma3.rnakernles">
+		<level value="info" />
+	</logger>
+		<logger name="it.uniroma3.rnasystem">
+		<level value="info" />
+	</logger>
+	
 </log4j:configuration>

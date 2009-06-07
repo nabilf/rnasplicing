@@ -1,13 +1,17 @@
 package it.uniroma3.rnaclassifier.paum.algorithm;
 
 import it.uniroma3.rnaclassifier.paum.exception.PAUMException;
-import it.uniroma3.rnaclassifier.paum.exception.PAUMInputException;
 import it.uniroma3.rnaclassifier.paum.models.PAUMInput;
 import it.uniroma3.rnaclassifier.paum.models.PAUMOutput;
+import it.uniroma3.rnaclassifier.paum.models.SparseFeatureVector;
+
+import org.apache.log4j.Logger;
 
 public class Paum
 {
 
+	private static Logger log = Logger.getLogger(Paum.class);
+	
 	private float tauP;
 
 	private float tauN;
@@ -81,103 +85,61 @@ public class Paum
 	}
 	
 	public PAUMOutput training(PAUMInput in) throws PAUMException{
-
+		int totalNumFeatures = in.getTotNumFeatures(); 
+		SparseFeatureVector[] dataLearning = in.getDataLearning(); 
+		int numTraining = in.getNumTraining(); 
+		short[] classLabels = in.getClassLabels(); 
+		
 		if(tauN>0)
 			tauN = -tauN;
-
-		float[] lambs = null; 
-		if(in.getNumTraining() <= 0){
-			throw new PAUMInputException("numTraining", ""+in.getNumTraining()); 
-		}else{
-			lambs = new float[in.getNumTraining()];
-		}
 		
-		
+		float [] w = new float[totalNumFeatures];
 		float b=0;
-
 		
-		float [] w = null; 
-		if(in.getTotNumFeatures() <= 0){
-			throw new PAUMInputException("totNumFeatures", ""+in.getTotNumFeatures()); 
-		}else{
-			w = new float[in.getTotNumFeatures()];
-		}
-		
-		boolean isModified;
-
-		try{
-			for(int iLoop=0; iLoop<this.totalLoops; ++iLoop){
-	
-				isModified  = false;
-	
-				for(int iCounter=0; iCounter<in.getNumTraining(); ++iCounter){
-	
-					final int i = iCounter;
-	
-					double sum =0;
-					
-					if(in.getDataLearning() != null){
-						
-						int len =in.getDataLearning().length;
-		
-						//Polinomio al kernel 
-						//Polinomial learning machine: spazi non linearmente separabili
-						//sum += Math.pow((w[dataLearning[i].indexes[j1]]*dataLearning[i].values[j1])+1, 2);
-						for(int j1=0; j1<len; ++j1)
-							sum += w[in.getDataLearning()[i].indexes[j1]]*in.getDataLearning()[i].values[j1];
-		
-		
-						sum += b;
-		
-						sum += lambs[i];
-		
-						short y00 = in.getClassLabels()[i];
-						
-						if(y00>0 && sum<=tauP){
-		
-							for(int j1=0; j1<len; ++j1)
-		
-								w[in.getDataLearning()[i].indexes[j1]] += in.getDataLearning()[i].values[j1];
-		
-							lambs[i] += eta;
-		
-							b += 1;
-		
-							isModified = true;
-		
-						} 
-		
-						else if(y00<0 && sum>=tauN){
-		
-							for(int j1=0; j1<len; ++j1)
-								w[in.getDataLearning()[i].indexes[j1]] -= in.getDataLearning()[i].values[j1];
-		
-							lambs[i] -= eta;
-		
-							b -= 1;
-		
-							isModified = true;
-		
-						}
-					}else{
-						throw new PAUMInputException("dataLearning"); 
+		for(int iLoop=0; iLoop<this.totalLoops; ++iLoop)
+		{
+			boolean notModified = true; 
+			int i = 0; 
+			while(notModified && i<numTraining){
+				int [] indexes = dataLearning[i].getIndexes();
+				float [] values = dataLearning[i].getValues();
+				
+				
+				//Calcolo di R^2
+				float R = 0;
+				for(int v =0; v<values.length; v++){
+					R += Math.pow(values[v], 2); 
+				}
+				R = (float) Math.sqrt(R); 
+				
+				//Prodotto vettoriale <wi, xi>
+				float vectSum = 0; 
+				for(int j =0; j<totalNumFeatures; j++){
+					vectSum += w[j]*values[j]; 
+				}
+				
+				//Vettore yi(<wi,xi>+b)
+				float vector = classLabels[i]*(vectSum+b); 
+				
+				//if yi(<wi,xi>+b) <= tau(yi)
+				if(vector <= tauP || vector <= tauN){
+					for(int n =0;n<totalNumFeatures; n++){
+						w[dataLearning[i].indexes[n]] += (((dataLearning[i].values[n])*eta)*classLabels[i]);
+						b += eta*classLabels[i]*(Math.pow(R, 2)); 
+						notModified = false; 
 					}
 				}
-		
-				if(!isModified)
-		
-					break;
-	
+				
+				i++;
 			}
-		}catch(Exception t ){
-			t.printStackTrace(); 
-			throw new PAUMException(t.getMessage()); 
 		}
-		
-		PAUMOutput pout = new PAUMOutput(b, w); 
-		
+//		for (int k=0; k<w.length; k++)
+//
+//			System.out.print(w[k]+" ");
+//		System.out.println();
+//		
+//		System.out.println("B "+b);
+		PAUMOutput pout = new PAUMOutput(b,w); 
 		return pout; 
-	}
-
-	
+	}	
 }

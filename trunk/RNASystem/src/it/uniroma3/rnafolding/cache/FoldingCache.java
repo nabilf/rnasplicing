@@ -92,7 +92,8 @@ public class FoldingCache implements FoldingAlgorithm{
 			log.error(e); 
 		}
 		log.debug("Cache loaded! "); 
-		return line;
+		String[] value = line.split(";"); 
+		return value[3];
 	}
 
 	private boolean isInCache(String sequence) {

@@ -58,7 +58,7 @@ public class CacheManager {
 			    	   rna.setSequence(value[2]); 
 			    	   rna.setStructure(value[3]); 
 			    	   rna.setExtendedStructure(value[4]);
-			    	  
+			    	   log.info("RNA "+rna.toString()); 
 			    	   map.get(realClass).add(rna); 
 			    	   i++; 
 			       	}

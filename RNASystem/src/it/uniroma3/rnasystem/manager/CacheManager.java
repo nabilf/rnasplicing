@@ -49,7 +49,7 @@ public class CacheManager {
 			while(linea!=null) {
 			       linea=br.readLine();
 			       if(linea!=null){
-			    	  //log.debug("LINE "+linea); 
+			    	  log.debug("LINE "+linea); 
 			    	   RNASequence rna = new RNASequence(); 
 			    	   String[] value = linea.split(";"); 
 			    	   rna.setMd5ID(value[0]);
@@ -58,7 +58,7 @@ public class CacheManager {
 			    	   rna.setSequence(value[2]); 
 			    	   rna.setStructure(value[3]); 
 			    	   rna.setExtendedStructure(value[4]);
-			    	   log.info("RNA "+rna.toString()); 
+			    	   log.debug("RNA "+rna.toString()); 
 			    	   map.get(realClass).add(rna); 
 			    	   i++; 
 			       	}

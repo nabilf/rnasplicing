@@ -15,8 +15,10 @@ public class RNASystemConfiguration {
 	public static String cacheDatasetPath="dataset/cache/"; 
 	public static String buildingDatasetPath="dataset/building/"; 
 	
+	public static final String performance_path = "performance/";
+	public static final String performance_file="performance.tex"; 
 	
-	public static boolean useFoldingCache = false;
+	public static boolean useFoldingCache = true;
 	public static String foldingAlgorithm = "Nussinov"; 
 	public static String foldingClass = "it.uniroma3.rnafolding.algorithm.Nussinov"; 
 	
@@ -26,18 +28,17 @@ public class RNASystemConfiguration {
 	
 	
 	public static boolean useClassifierCache = false; 
-	public static String classifierAlgorithm="Paum";
-	public static String classifierClass="it.uniroma3.rnaclassifier.paum.classifier.PaumClassifier";
+	public static String classifierAlgorithm="Knn";
+	public static String classifierClass="it.uniroma3.rnaclassifier.knn.classifier.KnnClassifier";
 	
 	
 	public static String kernelClass = "it.uniroma3.rnakernels.kernel.SequenceKernel"; 
 	
 	//KNN Parameter
-	public static final int K = 20;
+	public static final int K = 10;
 	
 	//PAUM Parameter
 	
-
 	public static final boolean NORMALIZE = false;
 
 	public static final float ETA = 1;
@@ -47,4 +48,8 @@ public class RNASystemConfiguration {
 	public static final float TAUP = 1f;
 
 	public static final int TOTALLOOPS = 2000;
+
+	public static final String metricsAlgorithm = "SequenceKernel";
+
+	
 }

@@ -30,6 +30,8 @@ public interface Constant {
 	public static final int COMPARE_REAL_CLASS = 1;
 	
 	public static final int SEQUENCE_COMPARE_K = 0;
-	public static final int SEQUENCE_COMPARE_CLASS = 1; 
+	public static final int SEQUENCE_COMPARE_CLASS = 1;
+	public static final String CM_PATH = null;
+	public static final String PERFORMANCE_PATH = null;
 }
 

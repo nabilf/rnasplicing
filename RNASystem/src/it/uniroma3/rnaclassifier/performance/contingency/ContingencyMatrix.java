@@ -1,13 +1,15 @@
 package it.uniroma3.rnaclassifier.performance.contingency;
 
 import it.uniroma3.rnaclassifier.helper.PerformanceHelper;
+import it.uniroma3.rnasystem.model.RNAClass;
 
 public class ContingencyMatrix {
-
+	private RNAClass clazz; 
 	private int[][] matrix;
 	
-	public ContingencyMatrix() {
+	public ContingencyMatrix(RNAClass clazz) {
 		this.matrix = new int[2][2];		
+		this.clazz = clazz; 
 	}
 	public void print(String clazz){
 		System.out.println("ContingecyMatrix class "+clazz);
@@ -32,7 +34,9 @@ public class ContingencyMatrix {
 			j = 1;
 		this.matrix[i][j] += 1;
 	}
-	
+	public double get(int i, int j){
+		return this.matrix[i][j]; 
+	}
 	public double get(boolean system, boolean truth) {
 		int i = 0;
 		int j = 0;
@@ -47,5 +51,12 @@ public class ContingencyMatrix {
 	public double getAll() {
 		return (double)PerformanceHelper.sumMatrix(this.matrix);
 	}
+	public RNAClass getClazz() {
+		return clazz;
+	}
+	public void setClazz(RNAClass clazz) {
+		this.clazz = clazz;
+	}
+	
 		
 }

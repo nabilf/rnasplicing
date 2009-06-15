@@ -46,4 +46,8 @@ public class KnnClass implements Comparable<KnnClass>{
 		return (new Integer (o.getFrequency()).compareTo(this.frequency));
 	}
 
+	public String toString() {
+		return this.className.toString();
+	}
+
 }

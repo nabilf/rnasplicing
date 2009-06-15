@@ -32,7 +32,7 @@ public class RNASystem {
 			log.info("DataSet Caricato; istanze : n*"+dataset.size() ); 
 			
 			//FOLDING
-			FoldingManager.fold(dataset); 
+			dataset = FoldingManager.fold(dataset); 
 				
 			//BUILDING 
 			//BuilderManager.build(dataset); 

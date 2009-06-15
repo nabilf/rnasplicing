@@ -14,7 +14,7 @@ public class RNAKernel{
 	
 	public RNAKernel(){
 		try {
-			this.kernel= (IKernel) Class.forName(RNASystemConfiguration.kernelClass).newInstance();
+		RNAKernel.kernel= (IKernel) Class.forName(RNASystemConfiguration.kernelClass).newInstance();
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -29,7 +29,7 @@ public class RNAKernel{
 	public void computeDistance(RNASequence rna1, RNASequence rna2) {
 		//log.debug("*** Kernel Manager ***"); 
 		try {			
-			rna1.setDistance(kernel.execute(rna1,rna2, RNASystemConfiguration.NORMALIZE)); 
+			rna2.setDistance(RNAKernel.kernel.execute(rna1,rna2, RNASystemConfiguration.NORMALIZE)); 
 		} catch (RNAKernelException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

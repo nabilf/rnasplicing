@@ -20,15 +20,15 @@ public class ContingencyMatrixManager {
 		this.contingency_ei = cmEI;
 		this.contingency_ie = cmIE; 
 		this.contingency_n = cmN; 
-		this.microMeasure = new ContingencyMatrix(); 
+		this.microMeasure = new ContingencyMatrix(RNAClass.MICRO); 
 		fillMicroMatrix(); 
 	}
 	
 	public  void init(){
-		contingency_n = new ContingencyMatrix();
-		contingency_ei = new ContingencyMatrix();
-		contingency_ie = new ContingencyMatrix();
-		microMeasure = new ContingencyMatrix();
+		contingency_n = new ContingencyMatrix(RNAClass.N);
+		contingency_ei = new ContingencyMatrix(RNAClass.EI);
+		contingency_ie = new ContingencyMatrix(RNAClass.IE);
+		microMeasure = new ContingencyMatrix(RNAClass.MICRO);
 	}
 	public void fillEIMatrix(RNASequence r){
 		contingency_ei.add(
@@ -53,21 +53,22 @@ public class ContingencyMatrixManager {
 		}else if(clazz.equalsIgnoreCase(RNAClass.N.toString())){
 			fillNMatrix(r); 
 		}
+		
 	}
 	public  void fillMatrix(RNASequence r){
 		
 		//contingency_n.add(predetta,real);
 		contingency_ei.add(
-					r.getPredictedClass().equals(RNAClass.EI.toString()), 
-					r.getRealClass().equals(RNAClass.EI.toString())); 
+					r.getPredictedClass().toString().equals(RNAClass.EI.toString()), 
+					r.getRealClass().toString().equals(RNAClass.EI.toString())); 
 		
 		contingency_n.add(
-				r.getPredictedClass().equals(RNAClass.N.toString()), 
-				r.getRealClass().equals(RNAClass.N.toString())); 
+				r.getPredictedClass().toString().equals(RNAClass.N.toString()), 
+				r.getRealClass().toString().equals(RNAClass.N.toString())); 
 		
 		contingency_ie.add(
-				r.getPredictedClass().equals(RNAClass.IE.toString()), 
-				r.getRealClass().equals(RNAClass.IE.toString())); 
+				r.getPredictedClass().toString().equals(RNAClass.IE.toString()), 
+				r.getRealClass().toString().equals(RNAClass.IE.toString())); 
 		
 		microMeasure.addMatrix(contingency_n);
 		microMeasure.addMatrix(contingency_ie);

@@ -31,6 +31,7 @@ public class DataSetManager {
 			while(it.hasNext()){
 				RNAClass className = it.next();
 				int trainingCont = Math.round(dataset.get(className).size() * trainingSetFactor); 
+				
 				trainingSet.addAll(dataset.get(className).subList(0, trainingCont)); 
 				testSet.addAll(dataset.get(className).subList(trainingCont, dataset.get(className).size())); 
 			}

@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public enum RNAClass implements Serializable {
         
-        NONE, EI, IE, N; 
+        NONE, EI, IE, N, MICRO, MACRO; 
         
         public static  RNAClass getRNAClass(String clazz){
                 if(clazz.equalsIgnoreCase(RNAClass.EI.toString())) {
@@ -16,4 +16,5 @@ public enum RNAClass implements Serializable {
                 else
                         return RNAClass.NONE; 
         }
+        
 }

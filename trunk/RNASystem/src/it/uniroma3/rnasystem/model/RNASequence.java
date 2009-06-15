@@ -31,6 +31,7 @@ public class RNASequence implements Serializable, Comparable{
 		this.sequence = sequence;
 		this.structure = structure;
 		this.distance = 0D; 
+		this.predictedClass = RNAClass.NONE; 
 	}
 	
 	public RNASequence() {
@@ -40,6 +41,7 @@ public class RNASequence implements Serializable, Comparable{
 		this.sequence = "";
 		this.structure = "";
 		this.distance = 0D; 
+		this.predictedClass = RNAClass.NONE; 
 	}
 	
 	public Double getDistance() {

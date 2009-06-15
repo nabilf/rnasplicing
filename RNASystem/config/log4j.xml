@@ -30,10 +30,21 @@
 		<logger name="it.uniroma3.rnaclassifier">
 		<level value="debug" />
 	</logger>
+		<logger name="it.uniroma3.rnaclassifier.knn">
+		<level value="info" />
+	</logger>
+	
 		<logger name="it.uniroma3.rnakernles">
 		<level value="info" />
 	</logger>
+			<logger name="it.uniroma3.rnasystem.logging">
+		<level value="info" />
+	</logger>
+
 		<logger name="it.uniroma3.rnasystem">
+		<level value="info" />
+	</logger>
+			<logger name="it.uniroma3.rnasystem.manager.CacheManager">
 		<level value="info" />
 	</logger>
 	

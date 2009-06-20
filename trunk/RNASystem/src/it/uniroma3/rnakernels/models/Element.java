@@ -12,11 +12,11 @@ public class Element implements Serializable{
 	protected Integer level; 
 	protected String bases;	 
 	
-	public Element(int i, int j) {
+	public Element(int i, int j, String bases) {
 		this.I = i;
 		this.J = j;
 		this.level = 0; 
-		this.bases = ""; 
+		this.bases = bases; 
 	}
 	public Element() {
 		this.I = 0;
@@ -25,6 +25,10 @@ public class Element implements Serializable{
 		this.bases = ""; 
 	}
 	
+	public Element(int i2, int j2) {
+		this.I = i2;
+		this.J = j2;
+	}
 	public String getBases() {
 		return bases;
 	}

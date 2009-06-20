@@ -1,14 +1,17 @@
 package it.uniroma3.rnakernels.builders;
 
 import it.uniroma3.rnakernels.exception.RNABuilderException;
+import it.uniroma3.rnakernels.models.Element;
 import it.uniroma3.rnakernels.models.Node;
 import it.uniroma3.rnakernels.regex.RegexManager;
 import it.uniroma3.rnasystem.setup.RNASystemConfiguration;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+
 
 public class GraphBuilder extends Builder {
 	private static Logger log = Logger.getLogger(TreeBuilder.class);
@@ -32,6 +35,75 @@ public class GraphBuilder extends Builder {
 		return new LinkedList<Node>(); 
 	}
 	
+	private static void buildSubGraph(Element e){
+		
+	}
+	
+	private static List<Element> getMacroStructure(String sequence, List<Element> macroStructure,String structure, int offSet){
+		
+		if(macroStructure == null){
+			macroStructure = new ArrayList<Element>(); 
+		}
+		if(structure.length()> 0){
+			int start=structure.indexOf("("); 
+			
+			if(start!=-1){
+				int openBracket = 1; 
+				int closeBracket = 0; 
+				
+				int i=start+1; 
+				
+				while(i<structure.length() && openBracket!= closeBracket){
+					if(structure.charAt(i) == '('){
+						openBracket++;  
+					}else if(structure.charAt(i) == ')'){
+						closeBracket++; 
+					}
+					i++; 
+				}
+				
+				macroStructure.add(new Element(start, i, sequence.substring(start, i))); 
+				log.debug(structure.substring(start,i));
+				log.debug(sequence.substring(start, i));
+				getMacroStructure(sequence, macroStructure, structure.substring(i), i-1); 
+			}
+		}
+		return macroStructure; 
+	}
+	
+	
+	public static void main(String[] args) {
+		String sequence = "GGCCACTGACATGGGTACTATGCAGGAAAGAATTACCACTACCAAGAAGGGATCTATCACCTCTGTACAGGTAAGAAAAATTACATAGATGAAGATCTGATTTGTATAAAGGCAGGGTGCAGTGGTGCATCTCAGCTACT"; 
+	 
+		String structure = ".." +
+		"((.(.(.)..)))" +
+		".." +
+		"(...)" +
+		"(.)" +
+		".........." +
+		"((.(..((..)..))(..(...(.((.(.(..).))...(........)...)..)..)..).)....)" +
+		"........" +
+		"(.)" +
+		"..." +
+		"((.).((.()..).(.))..)"+
+		".";
+		printSequence(sequence); 
+		printSequence(structure); 
+		GraphBuilder b = new GraphBuilder(sequence,structure); 
+		getMacroStructure(sequence, null, structure, 0); 
+		//String s = b.getGraphStructure(); 
+	}
+	public static void printSequence(String s ){
+		
+		for (int i =0; i<s.length(); i++){
+			System.out.print(s.charAt(i)+"\t");
+		}
+		System.out.println("\n");
+		for (int i =0; i<s.length(); i++){
+			System.out.print(i+"\t");
+		}
+		System.out.println("\n");
+	}
 	
 	
 	
@@ -78,13 +150,5 @@ public class GraphBuilder extends Builder {
 		System.out.println(gf);
 		log.debug("Graph Structure : "+gf); 
 		return gf; 
-	}
-
-	
-	public static void main(String[] args) {
-		String s = "...(..(..).).(........)...(..(.((..)...)..)...)";
-		System.out.println(s);
-		GraphBuilder b = new GraphBuilder(s,s); 
-		s = b.getGraphStructure(); 
 	}
 }

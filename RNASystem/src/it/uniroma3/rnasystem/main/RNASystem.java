@@ -1,5 +1,6 @@
 package it.uniroma3.rnasystem.main;
 
+import it.uniroma3.rnasystem.manager.BuilderManager;
 import it.uniroma3.rnasystem.manager.ClassifierManager;
 import it.uniroma3.rnasystem.manager.DataSetManager;
 import it.uniroma3.rnasystem.manager.FoldingManager;
@@ -35,7 +36,7 @@ public class RNASystem {
 			dataset = FoldingManager.fold(dataset); 
 				
 			//BUILDING 
-			//BuilderManager.build(dataset); 
+			BuilderManager.build(dataset); 
 			
 			//Building Training and Test Set; 
 			DataSetManager.createDataSets(dataset,RNASystemConfiguration.trainingSetFactor); 

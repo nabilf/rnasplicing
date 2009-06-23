@@ -1,6 +1,7 @@
 package it.uniroma3.rnakernels.builders;
 
 import it.uniroma3.rnakernels.exception.RNABuilderException;
+import it.uniroma3.rnakernels.models.Edge;
 import it.uniroma3.rnakernels.models.Element;
 import it.uniroma3.rnakernels.models.Node;
 import it.uniroma3.rnakernels.regex.RegexManager;
@@ -36,40 +37,49 @@ public class GraphBuilder extends Builder {
 		return new LinkedList<Node>();
 	}
 
-	private void buildSubGraph(Element el) {
+	private void buildSubGraph(Element el, Node node) {
 		System.out.println("BUILD SUB GRAPH");
 		
-		String structure = this.structure.substring(el.getI(), el.getJ());
+		String structure = el.getStructure();
+		String sequence = el.getBases(); 
 		
-		int start = 0;
-		int end = structure.length() - 1;
-		
-		System.out.println(structure);
-		System.out.println("Start " + start);
-		System.out.println("end " + end);
-		
-		//Fino a che gli indici non coincidono
-		while(start!=end){
-			char s = structure.charAt(start); 
-			char e = structure.charAt(end); 
-		
+		while(structure.length()>0){
+			System.out.println("[Actual] "+el.getBases());
+			
+			int start = 0;
+			int end = structure.length() - 1;
+			Edge e = new Edge(start, end); 
+			int stemSize = 1; 
+			//Fino a che gli indici incontrano parentesi
+			while( structure.charAt(start) != '.' && structure.charAt(end) != '.'){	
+				start++; 
+				end--; 
+				stemSize++; 
+			}
+			e.setStemSize(stemSize); 
+			System.out.println("E "+(e.getJ()-stemSize));
+			e.setBases((el.getBases().substring(e.getI(), e.getI()+stemSize-1)+(el.getBases().substring(e.getJ()-stemSize+1, e.getJ())))); 
+			System.out.println(e.toString()); 
+			break; 
 		}
 	}
-
-	private List<Element> getMacroStructure(String sequence,
-			List<Element> macroStructure, String structure, int offSet) {
-
-		System.out.println(structure);
-		System.out.println(sequence); 
+	
+	private String getMacroStructure(String sequence,
+			List<Element> macroStructure, String structure, int offSet, String node) {
 		
-		if (macroStructure == null) {
-			macroStructure = new ArrayList<Element>();
-		}
+		//System.out.println("[Actual] "+structure);
+		//System.out.println("[Actual] "+sequence); 
 		
 		if (structure.length() > 0) {
 			int start = structure.indexOf("(");
 			
 			if (start != -1) {
+				//Se la prima parentesi non  all'inizio, allora la sequenza 
+				//inizia con i punti quindi comincio a costruire il nodo
+				if(start>0){
+					node += sequence.substring(0, start); 
+					System.out.println("found NODE "+node);
+				}
 				int openBracket = 1;
 				int closeBracket = 0;
 
@@ -84,27 +94,27 @@ public class GraphBuilder extends Builder {
 					i++;
 				}
 				
-				System.out.println();
-				System.out.println("[Actual] Start "+start);
-				System.out.println("[Actual] End "+i);
-				System.out.println("[Actual] "+structure.substring(start, i));
-				System.out.println("[Actual] "+sequence.substring(start, i));	
-				System.out.println();
-				System.out.println("[Absolute] "+this.structure.substring(offSet+start, offSet+i));
-				System.out.println("[Absolute] "+this.sequence.substring(offSet+start, offSet+i));
-				System.out.println();				
+//				System.out.println();
+//				System.out.println("[Actual] Start "+start);
+//				System.out.println("[Actual] End "+i);
+//				System.out.println("[Actual] "+structure.substring(start, i));
+//				System.out.println("[Actual] "+sequence.substring(start, i));	
+//				System.out.println();
+//				System.out.println("[Absolute] "+this.structure.substring(offSet+start, offSet+i));
+//				System.out.println("[Absolute] "+this.sequence.substring(offSet+start, offSet+i));
+//				System.out.println();				
 
-				macroStructure.add(new Element(offSet + start, offSet + i,this.sequence.substring(offSet + start, offSet + i)));
-				offSet += i;
-				getMacroStructure(sequence.substring(i), macroStructure, structure.substring(i), offSet);
+				macroStructure.add(new Element(offSet + start, offSet + i,this.sequence.substring(offSet + start, offSet + i), this.structure.substring(offSet + start, offSet + i)));
+				
+				node = getMacroStructure(sequence.substring(i), macroStructure, structure.substring(i), offSet, node);
 			}
 		}
-		return macroStructure;
+		return node;
 	}
 
 	public static void main(String[] args) {
-		String sequence = "GGCCACTGACATGGGTACTATGCAGGAAAGAATTACCACTACCAAGAAGGGATCTATCACCTCTGTACAGGTAAGAAAAATTACATAGATGAAGATCTGATTTGTATAAAGGCAGGGTGCAGTGGTGCATCTCAGCTACT";
-		
+		String sequence = "XXCCACTGACAYYGGTACTATGCAGGAAAGAATTACCACTACCAAGAAGGGATCTATCACCTCTGTACAGGTAAGAAAAATTACATAGATGAAGATCTGATTTGTATAAAGGCAGGGTGCAGTGGTGCATCTCAGCTACT";
+			String a = 	  "((.(.(.)..)))"; 
 		String structure = ".."
 				+ "((.(.(.)..)))"
 				+ ".."
@@ -120,9 +130,15 @@ public class GraphBuilder extends Builder {
 		//printSequence(sequence);
 		//printSequence(structure);
 		GraphBuilder b = new GraphBuilder(sequence, structure);
-		List<Element> macroStructure = b.getMacroStructure(sequence, null,structure, 0);
-		b.buildSubGraph(macroStructure.get(0));
-		// String s = b.getGraphStructure();
+		List<Element> macroStructure =  new ArrayList<Element>(); 
+		
+		String node = 	b.getMacroStructure(sequence, macroStructure,structure, 0, "");
+		Node root = new Node(node);
+		b.buildSubGraph(macroStructure.get(0), root); 
+//		System.out.println("SIZE "+macroStructure.size());
+//		System.out.println("NODE "+node);
+//		System.out.println("End");
+
 	}
 
 	public static void printSubSequence(String s, int i, int j){

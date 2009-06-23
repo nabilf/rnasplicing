@@ -17,7 +17,12 @@ public class Node extends Element implements Cloneable, Serializable{
 		super.bases = bases; 
 		this.edges = edges; 
 	}
-
+	public Node(String bases){
+		super(); 
+		super.bases = bases; 
+		this.edges = new LinkedList<Edge>();
+		this.element = new LinkedList<Element>(); 
+	}
 	public Node() {
 		super(); 
 		this.edges = new LinkedList<Edge>();

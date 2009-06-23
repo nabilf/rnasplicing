@@ -11,12 +11,14 @@ public class Element implements Serializable{
 	protected Integer J;
 	protected Integer level; 
 	protected String bases;	 
+	protected String structure; 
 	
-	public Element(int i, int j, String bases) {
+	public Element(int i, int j, String bases, String structure) {
 		this.I = i;
 		this.J = j;
 		this.level = 0; 
 		this.bases = bases; 
+		this.structure = structure; 
 	}
 	public Element() {
 		this.I = 0;
@@ -28,6 +30,13 @@ public class Element implements Serializable{
 	public Element(int i2, int j2) {
 		this.I = i2;
 		this.J = j2;
+	}
+	
+	public String getStructure() {
+		return structure;
+	}
+	public void setStructure(String structure) {
+		this.structure = structure;
 	}
 	public String getBases() {
 		return bases;
@@ -52,6 +61,9 @@ public class Element implements Serializable{
 	}
 	public void setLevel(Integer level) {
 		this.level = level;
+	}
+	public String toString() {
+		return "I: "+this.I+" ; J: "+this.J+"; BASES: "+this.bases.toString();
 	}
 	
 }

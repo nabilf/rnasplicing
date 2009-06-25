@@ -26,6 +26,13 @@ public class Edge extends Element implements Serializable{
 		this.stemSize =0;
 		this.removed = false; 
 	}
+	public Edge() {
+		super(0, 0); 
+		this.stemSize =0;
+		this.removed = false; 
+		super.bases = ""; 
+	}
+
 	public boolean isRemoved() {
 		return removed;
 	}

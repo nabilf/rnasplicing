@@ -4,8 +4,6 @@ import it.uniroma3.rnakernels.exception.RNABuilderException;
 import it.uniroma3.rnakernels.models.Edge;
 import it.uniroma3.rnakernels.models.Element;
 import it.uniroma3.rnakernels.models.Node;
-import it.uniroma3.rnakernels.regex.RegexManager;
-import it.uniroma3.rnasystem.setup.RNASystemConfiguration;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -30,45 +28,67 @@ public class GraphBuilder extends Builder {
 
 	@Override
 	public List<Node> execute() throws RNABuilderException {
-
-		String graph = this.getGraphStructure();
-		graph = "E3(I2(H2)I1)M1(H8)M3(I2(I1((H2)B3)I2)I3)";
-
+		
+		//this.getMacroStructure(sequence, new ArrayList<Element>(), structure, ""); 
+		Node root = this.buildRecursive(this.structure.toString(), this.sequence.toString()); 
+		
 		return new LinkedList<Node>();
 	}
-
-	private void buildSubGraph(Element el, Node node) {
-		System.out.println("BUILD SUB GRAPH");
+	private Node buildRecursive(String structure, String sequence){
+		System.out.println("**** NEW NODE ****");
+		List<Element> macroStructure =  new ArrayList<Element>(); 
 		
-		String structure = el.getStructure();
-		String sequence = el.getBases(); 
-		
-		while(structure.length()>0){
-			System.out.println("[Actual] "+el.getBases());
+		Node n = new Node(this.getMacroStructure(sequence, macroStructure, structure, null)); 
+		System.out.println("NODE "+n.getBases());
+		for (Element macro : macroStructure) {
+			System.out.println("Macro Structure "+macro.getStructure());
+			System.out.println("Macro Sequence "+macro.getBases());
+			Edge e = this.findEdge(macro); 
+			n.getEdges().add(e);
+			String nextStructure = macro.getStructure().substring(e.getI(),e.getJ()+1);
 			
-			int start = 0;
-			int end = structure.length() - 1;
-			Edge e = new Edge(start, end); 
-			int stemSize = 1; 
-			//Fino a che gli indici incontrano parentesi
-			while( structure.charAt(start) != '.' && structure.charAt(end) != '.'){	
-				start++; 
-				end--; 
-				stemSize++; 
-			}
-			e.setStemSize(stemSize); 
-			System.out.println("E "+(e.getJ()-stemSize));
-			e.setBases((el.getBases().substring(e.getI(), e.getI()+stemSize-1)+(el.getBases().substring(e.getJ()-stemSize+1, e.getJ())))); 
-			System.out.println(e.toString()); 
-			break; 
+			String nextSequence = macro.getBases().substring(e.getI(),e.getJ()+1);
+			e.setDestination(this.buildRecursive(nextStructure, nextSequence));  
 		}
+		return new Node(); 
+	}
+	private Edge findEdge(Element el) {			
+		int start = 0;
+		int end = el.getStructure().length() - 1;
+		System.out.println(el.getStructure());
+		Edge e = new Edge(); 
+		
+		int stemSize = 0; 
+		char s = el.getStructure().charAt(start); 
+		char en = el.getStructure().charAt(end);
+		while(start != end)
+		{
+			if(el.getStructure().charAt(start) == '('){
+				if(el.getStructure().charAt(end) ==')'){
+					stemSize++; 
+					start++; 
+					end--; 
+				}else{
+					end--; 
+				}
+			}else if(el.getStructure().charAt(start) != '(') {
+				start++; 
+				
+			}
+		}
+		System.out.println("Stem size "+(stemSize));
+		e.setStemSize(stemSize-1); 
+		e.setI(start-1); 
+		e.setJ(end+1); 
+		
+	//	e.setBases((el.getBases().substring(0,stemSize)+(el.getBases().substring(el.getStructure().length()-stemSize, el.getStructure().length())))); 
+		e.setStructure((el.getStructure().substring(0,stemSize)+(el.getStructure().substring(el.getStructure().length()-stemSize, el.getStructure().length())))); 
+		System.out.println("new EDGE "+e.toString());
+		return e;  
 	}
 	
 	private String getMacroStructure(String sequence,
-			List<Element> macroStructure, String structure, int offSet, String node) {
-		
-		//System.out.println("[Actual] "+structure);
-		//System.out.println("[Actual] "+sequence); 
+			List<Element> macroStructure, String structure, String node) {
 		
 		if (structure.length() > 0) {
 			int start = structure.indexOf("(");
@@ -77,8 +97,9 @@ public class GraphBuilder extends Builder {
 				//Se la prima parentesi non  all'inizio, allora la sequenza 
 				//inizia con i punti quindi comincio a costruire il nodo
 				if(start>0){
+					if(node ==null)
+						node = ""; 
 					node += sequence.substring(0, start); 
-					System.out.println("found NODE "+node);
 				}
 				int openBracket = 1;
 				int closeBracket = 0;
@@ -93,20 +114,22 @@ public class GraphBuilder extends Builder {
 					}
 					i++;
 				}
-				
 //				System.out.println();
-//				System.out.println("[Actual] Start "+start);
-//				System.out.println("[Actual] End "+i);
-//				System.out.println("[Actual] "+structure.substring(start, i));
-//				System.out.println("[Actual] "+sequence.substring(start, i));	
-//				System.out.println();
-//				System.out.println("[Absolute] "+this.structure.substring(offSet+start, offSet+i));
-//				System.out.println("[Absolute] "+this.sequence.substring(offSet+start, offSet+i));
+//				System.out.println("[Result] Start "+start);
+//				System.out.println("[Result] End "+i);
+//				System.out.println("[Result] "+structure.substring(start, i));
+//				System.out.println("[Result] "+sequence.substring(start, i));	
 //				System.out.println();				
 
-				macroStructure.add(new Element(offSet + start, offSet + i,this.sequence.substring(offSet + start, offSet + i), this.structure.substring(offSet + start, offSet + i)));
+				macroStructure.add(new Element(sequence.substring(start, i), structure.substring(start, i)));
 				
-				node = getMacroStructure(sequence.substring(i), macroStructure, structure.substring(i), offSet, node);
+				node = getMacroStructure(sequence.substring(i), macroStructure, structure.substring(i), node);
+			}else{
+				if(node == null)
+					node = ""; 
+				for(int i=0; i<sequence.length(); i++){
+					node += sequence.charAt(i); 
+				}
 			}
 		}
 		return node;
@@ -114,7 +137,7 @@ public class GraphBuilder extends Builder {
 
 	public static void main(String[] args) {
 		String sequence = "XXCCACTGACAYYGGTACTATGCAGGAAAGAATTACCACTACCAAGAAGGGATCTATCACCTCTGTACAGGTAAGAAAAATTACATAGATGAAGATCTGATTTGTATAAAGGCAGGGTGCAGTGGTGCATCTCAGCTACT";
-			String a = 	  "((.(.(.)..)))"; 
+			//String a = 	  "((.(.(.)..)))"; 
 		String structure = ".."
 				+ "((.(.(.)..)))"
 				+ ".."
@@ -130,66 +153,15 @@ public class GraphBuilder extends Builder {
 		//printSequence(sequence);
 		//printSequence(structure);
 		GraphBuilder b = new GraphBuilder(sequence, structure);
-		List<Element> macroStructure =  new ArrayList<Element>(); 
 		
-		String node = 	b.getMacroStructure(sequence, macroStructure,structure, 0, "");
-		Node root = new Node(node);
-		b.buildSubGraph(macroStructure.get(0), root); 
-//		System.out.println("SIZE "+macroStructure.size());
-//		System.out.println("NODE "+node);
-//		System.out.println("End");
+		//try {
+			Element e = new Element("AAAAAAAAAAAAAAAAAAAA","((.)())"); 
+			b.findEdge(e); 
+//			b.execute();
+//		} catch (RNABuilderException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} 
 
-	}
-
-	public static void printSubSequence(String s, int i, int j){
-		for(int c = i; c<j; c++){
-			System.out.print(s.charAt(c));
-		}
-	}
-	public static void printSequence(String s) {
-
-		for (int i = 0; i < s.length(); i++) {
-			System.out.print(s.charAt(i) + "\t");
-		}
-		System.out.println("\n");
-		for (int i = 0; i < s.length(); i++) {
-			System.out.print(i + "\t");
-		}
-		System.out.println("\n");
-	}
-
-	public String getGraphStructure() {
-		String gf = this.structure;
-		// Find Structure ;
-		gf = RegexManager.applyAndReplace(
-				RNASystemConfiguration.RE_HAIRPIN_LOOP, gf,
-				RNASystemConfiguration.HAIRPIN_LOOP,
-				RNASystemConfiguration.OPEN_BRACKET,
-				RNASystemConfiguration.CLOSE_BRACKET);
-		// gf = RegexManager.applyAndReplace(
-		// RNASystemConfiguration.RE_RIGHT_BULGE_LOOP,
-		// gf,
-		// RNASystemConfiguration.BULGE_LOOP,
-		// RNASystemConfiguration.OPEN_BRACKET,
-		// RNASystemConfiguration.OPEN_BRACKET);
-		// gf = RegexManager.applyAndReplace(
-		// RNASystemConfiguration.RE_LEFT_BULGE_LOOP,
-		// gf,
-		// RNASystemConfiguration.BULGE_LOOP,
-		// RNASystemConfiguration.CLOSE_BRACKET,
-		// RNASystemConfiguration.CLOSE_BRACKET);
-		// gf = RegexManager.applyAndReplace(
-		// RNASystemConfiguration.RE_INTERNAL_LOOP,
-		// gf,
-		// RNASystemConfiguration.INTERNAL_LOOP,
-		// RNASystemConfiguration.OPEN_BRACKET,
-		// RNASystemConfiguration.CLOSE_BRACKET);
-		gf = RegexManager.applyAndReplace(RNASystemConfiguration.RE_MULTI_LOOP,
-				gf, RNASystemConfiguration.MULTI_LOOP,
-				RNASystemConfiguration.CLOSE_BRACKET,
-				RNASystemConfiguration.OPEN_BRACKET);
-		System.out.println(gf);
-		log.debug("Graph Structure : " + gf);
-		return gf;
 	}
 }

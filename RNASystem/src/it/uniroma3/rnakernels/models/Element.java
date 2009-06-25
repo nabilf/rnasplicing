@@ -20,6 +20,13 @@ public class Element implements Serializable{
 		this.bases = bases; 
 		this.structure = structure; 
 	}
+	public Element(String bases, String structure) {
+		this.I = 0;
+		this.J = 0;
+		this.level = 0; 
+		this.bases = bases; 
+		this.structure = structure; 
+	}
 	public Element() {
 		this.I = 0;
 		this.J = 0;

@@ -61,6 +61,7 @@ public class GraphBuilder extends Builder {
 		int stemSize = 0; 
 		char s = el.getStructure().charAt(start); 
 		char en = el.getStructure().charAt(end);
+		
 		while(start != end)
 		{
 			if(el.getStructure().charAt(start) == '('){
@@ -69,11 +70,18 @@ public class GraphBuilder extends Builder {
 					start++; 
 					end--; 
 				}else{
-					end--; 
+					start = end; 
+					//stemSize--; 
 				}
-			}else if(el.getStructure().charAt(start) != '(') {
-				start++; 
-				
+			}else if(el.getStructure().charAt(start) == ')') {
+				stemSize--; 
+				start = end; 
+			}else if(el.getStructure().charAt(end) == '('){
+				stemSize--; 
+				start = end; 
+			}else if((el.getStructure().charAt(start) == '.') || (el.getStructure().charAt(end) == '.')){
+				start = end; 
+				stemSize--; 
 			}
 		}
 		System.out.println("Stem size "+(stemSize));
@@ -155,7 +163,7 @@ public class GraphBuilder extends Builder {
 		GraphBuilder b = new GraphBuilder(sequence, structure);
 		
 		//try {
-			Element e = new Element("AAAAAAAAAAAAAAAAAAAA","((.)())"); 
+			Element e = new Element("AAAAAAAAAAAAAAAAAAAA","((.(.)))"); 
 			b.findEdge(e); 
 //			b.execute();
 //		} catch (RNABuilderException e) {
